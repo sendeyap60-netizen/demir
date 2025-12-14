@@ -1,0 +1,269 @@
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+void main() {
+  runApp(const AslanAreaApp());
+}
+
+class AslanAreaApp extends StatelessWidget {
+  const AslanAreaApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Aslan Area',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primarySwatch: Colors.red,
+        scaffoldBackgroundColor: const Color(0xFF0F0F0F),
+        textTheme: GoogleFonts.anton().apply(bodyColor: Colors.white),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xFFFFD700), // Sarı
+            foregroundColor: Colors.black,
+            textStyle: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            padding: const EdgeInsets.symmetric(vertical: 20),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+            elevation: 10,
+          ),
+        ),
+      ),
+      home: const AnaEkran(),
+    );
+  }
+}
+
+class AnaEkran extends StatefulWidget {
+  const AnaEkran({super.key});
+  @override
+  State<AnaEkran> createState() => _AnaEkranState();
+}
+
+class _AnaEkranState extends State<AnaEkran> with TickerProviderStateMixin {
+  String aktifSayfa = "menu";
+  bool yetkili = false;
+  final TextEditingController sifreCtrl = TextEditingController();
+
+  late AnimationController _pulse;
+  late Animation<double> _scale;
+
+  @override
+  void initState() {
+    super.initState();
+    _pulse = AnimationController(vsync: this, duration: const Duration(milliseconds: 1000));
+    _scale = Tween<double>(begin: 0.95, end: 1.05).animate(CurvedAnimation(parent: _pulse, curve: Curves.easeInOut));
+    _pulse.repeat(reverse: true);
+  }
+
+  @override
+  void dispose() {
+    _pulse.dispose();
+    sifreCtrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Yetkili Giriş
+    if (aktifSayfa == "yetkili") {
+      return Scaffold(
+        body: Container(
+          decoration: const BoxDecoration(gradient: LinearGradient(colors: [Colors.black, Color(0xFF440000)], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(30),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text("ASLAN PANELİ", style: TextStyle(fontSize: 40, color: Colors.yellow[600], fontWeight: FontWeight.bold, shadows: const [Shadow(color: Colors.red, blurRadius: 15)])),
+                  const SizedBox(height: 50),
+                  TextField(
+                    controller: sifreCtrl,
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      labelText: "Şifre",
+                      labelStyle: const TextStyle(color: Colors.yellow),
+                      filled: true,
+                      fillColor: Colors.grey[900],
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
+                      prefixIcon: const Icon(Icons.lock, color: Colors.yellow),
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.red[900], minimumSize: const Size(220, 65)),
+                    onPressed: () {
+                      if (sifreCtrl.text == "aslan1905") {
+                        setState(() => yetkili = true);
+                        aktifSayfa = "menu";
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Hoş geldin gerçek Aslan!")));
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Bu kapıdan sadece aslanlar geçer!")));
+                      }
+                    },
+                    child: const Text("GİRİŞ", style: TextStyle(fontSize: 22, color: Colors.yellow)),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    // Ana Menü – ASLAN AREA
+    if (aktifSayfa == "menu") {
+      return Scaffold(
+        body: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(colors: [Color(0xFFCC0000), Color(0xFF660000)], begin: Alignment.topCenter, end: Alignment.bottomCenter),
+          ),
+          child: SafeArea(
+            child: Column(
+              children: [
+                const SizedBox(height: 30),
+                ScaleTransition(scale: _scale, child: const Text("ASLAN AREA", style: TextStyle(fontSize: 64, color: Colors.yellow, fontWeight: FontWeight.bold, shadows: [Shadow(color: Colors.black, blurRadius: 10, offset: Offset(4,4))]))),
+                const SizedBox(height: 60),
+                Expanded(
+                  child: ListView(
+                    padding: const EdgeInsets.symmetric(horizontal: 25),
+                    children: [
+                      _buton("TARTIŞMA ARENASI", () => setState(() => aktifSayfa = "tartisma")),
+                      _buton("OFFLINE KARİYER MODU", () => _yakinda("Kariyer modu yakında!")),
+                      _buton("HAGİ FÜZESİ", () => setState(() => aktifSayfa = "hagi")),
+                      _buton("MERTENS VEDA FRİKİĞİ", () => _mertens()),
+                      _buton("ICARDI ŞOV", () => _icardi()),
+                      const SizedBox(height: 20),
+                      if (yetkili) _buton("YETKİLİ PANELİ", () => _yakinda("Yetkili paneli aktif!")),
+                      if (!yetkili) _buton("YETKİLİ GİRİŞİ", () => setState(() => aktifSayfa = "yetkili")),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
+    // Hagi Füzesi
+    if (aktifSayfa == "hagi") {
+      return Scaffold(
+        backgroundColor: Colors.black,
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text("HAGİ FÜZESİ", style: TextStyle(fontSize: 60, color: Colors.yellow, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 20),
+              const Text("ORTA SAHADAN GOL!", style: TextStyle(fontSize: 44, color: Colors.red)),
+              const SizedBox(height: 40),
+              ElevatedButton(onPressed: () => setState(() => aktifSayfa = "menu"), child: const Text("GERİ DÖN")),
+            ],
+          ),
+        ),
+      );
+    }
+
+    // Tartışma Arenası
+    if (aktifSayfa == "tartisma") {
+      return TartismaArenasi(yetkili: yetkili, geri: () => setState(() => aktifSayfa = "menu"));
+    }
+
+    return Scaffold(body: Center(child: Text("$aktifSayfa\nYAKINDA!", style: const TextStyle(fontSize: 36, color: Colors.yellow))));
+  }
+
+  Widget _buton(String text, VoidCallback onTap) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: ElevatedButton(onPressed: onTap, child: Text(text)),
+    );
+  }
+
+  void _yakinda(String msg) => ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
+  void _mertens() => _yakinda("90+5... MERTENS FRİKİK GOLÜÜÜÜÜ!");
+  void _icardi() => _yakinda("ICARDI DÖNDÜ VURDU GOOOL!");
+}
+
+// TARTIŞMA ARENASI (Aslan Area versiyonu)
+class TartismaArenasi extends StatefulWidget {
+  final bool yetkili;
+  final VoidCallback geri;
+  const TartismaArenasi({required this.yetkili, required this.geri, super.key});
+  @override
+  State<TartismaArenasi> createState() => _TartismaArenasiState();
+}
+
+class _TartismaArenasiState extends State<TartismaArenasi> {
+  final List<Map<String, dynamic>> mesajlar = [];
+  bool ozakSusturuldu = false;
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(const Duration(seconds: 1), _basla);
+  }
+
+  void _basla() async {
+    final List<Map<String, dynamic>> demo = [
+      {"k": "Aslan", "m": "Aslan Area’da şampiyonluk konuşulur!", "c": Colors.red},
+      {"k": "Özak", "m": "Ama penaltı...", "c": const Color(0xFFF1C40F)},
+      {"k": "Aslan", "m": "Özak sustur butonu nerde?", "c": Colors.red},
+      {"k": "Aslan", "m": "1 Aralık Kadıköy’de görüşürüz!", "c": Colors.red},
+    ];
+    for (var m in demo) {
+      await Future.delayed(const Duration(seconds: 3));
+      if (!mounted) return;
+      if (m["k"] == "Özak" && ozakSusturuldu) continue;
+      setState(() => mesajlar.add(m));
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("ASLAN AREA - TARTIŞMA"), backgroundColor: const Color(0xFFCC0000)),
+      body: Container(
+        color: Colors.black87,
+        child: Column(
+          children: [
+            Expanded(
+              child: ListView.builder(
+                padding: const EdgeInsets.all(12),
+                itemCount: mesajlar.length,
+                itemBuilder: (_, i) {
+                  final m = mesajlar[i];
+                  return ListTile(
+                    leading: Text("${m['k']}:", style: TextStyle(color: m['c'], fontWeight: FontWeight.bold, fontSize: 19)),
+                    title: Text(m['m'], style: const TextStyle(color: Colors.white, fontSize: 18)),
+                  );
+                },
+              ),
+            ),
+            if (widget.yetkili)
+              Container(
+                color: Colors.red[900],
+                padding: const EdgeInsets.all(12),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ElevatedButton(onPressed: () => setState(() => ozakSusturuldu = true), child: const Text("ÖZAK SUSTUR")),
+                    ElevatedButton(onPressed: () => setState(() => ozakSusturuldu = false), child: const Text("AÇ")),
+                    ElevatedButton(onPressed: () => setState(() => mesajlar.clear()), child: const Text("TEMİZLE")),
+                  ],
+                ),
+              ),
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: ElevatedButton(
+                onPressed: widget.geri,
+                style: ElevatedButton.styleFrom(minimumSize: const Size(double.infinity, 60)),
+                child: const Text("ANA MENÜ", style: TextStyle(fontSize: 22)),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
