@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ASLAN AREA Güncelleme</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background:
+        linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.8)),
+        url('https://images.unsplash.com/photo-1581091215367-59ab6c1b1d5b') center/cover no-repeat;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* GS Logo - arka plan */
+    .gs-logo {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 550px;
+      height: 550px;
+      background: url("https://upload.wikimedia.org/wikipedia/commons/0/0e/Galatasaray_Sports_Club_Logo.png") center/contain no-repeat;
+      opacity: 0.05;
+      animation: pulse 10s infinite ease-in-out;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.05; }
+      50% { transform: translate(-50%, -50%) scale(1.08); opacity: 0.08; }
+    }
+
+    /* Güncelleme Watermark */
+    .bg-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(-15deg);
+      font-size: clamp(5rem, 12vw, 12rem);
+      font-weight: 900;
+      letter-spacing: 1rem;
+      white-space: nowrap;
+      z-index: 2;
+      pointer-events: none;
+      user-select: none;
+      background: linear-gradient(45deg, #c8102e, #fcbf00);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: colorShift 3s ease-in-out infinite alternate;
+    }
+
+    @keyframes colorShift {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 100% 50%; }
+    }
+
+    /* Ön içerik card */
+    .content-card {
+      position: relative;
+      z-index: 3;
+      background: rgba(0,0,0,0.65);
+      backdrop-filter: blur(5px);
+      border-radius: 15px;
+      padding: 50px 30px 40px;
+      max-width: 450px;
+      width: 90%;
+      color: #fff;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+      text-align: center;
+      animation: fadeUp 1s ease forwards;
+      opacity: 0;
+    }
+
+    @keyframes fadeUp {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Başlık ve yazı */
+    .update-text {
+      font-weight: 700;
+      font-size: 1.5rem;
+      background: linear-gradient(45deg, #c8102e, #fcbf00);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 1px 1px 5px rgba(0,0,0,0.4);
+      margin-bottom: 20px;
+      animation: fadeUp 1.5s ease forwards;
+    }
+
+    p {
+      color: #ddd;
+      font-size: 1rem;
+      margin-bottom: 30px;
+    }
+
+    /* Üç nokta animasyonu */
+    .dots::after {
+      content: "";
+      animation: dots 1.5s steps(3, end) infinite;
+    }
+
+    @keyframes dots {
+      0% { content: ""; }
+      33% { content: "."; }
+      66% { content: ".."; }
+      100% { content: "..."; }
+    }
+
+    /* GS Buton */
+    .btn-gs {
+      background: linear-gradient(135deg, #c8102e, #fcbf00);
+      border: none;
+      color: #fff;
+      font-weight: 600;
+      padding: 12px 28px;
+      font-size: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+      transition: all 0.3s ease;
+    }
+
+    .btn-gs:hover {
+      transform: translateY(-3px);
+      filter: brightness(1.1);
+    }
+
+    @media (max-width: 576px) {
+      .gs-logo { width: 300px; height: 300px; }
+      .bg-text { font-size: clamp(3rem, 10vw, 8rem); letter-spacing: 0.5rem; }
+      .content-card { padding: 40px 20px 30px; }
+      .update-text { font-size: 1.2rem; }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Arka plan logo -->
+  <div class="gs-logo"></div>
+
+  <!-- Watermark -->
+  <div class="bg-text">GÜNCELLEME</div>
+
+  <!-- Ön içerik -->
+  <div class="content-card">
+    <div class="update-text">ASLAN AREA’da güncelleme var<span class="dots"></span></div>
+    <p>Daha iyi bir deneyim için kısa süreliğine yayında değiliz. Lütfen biraz bekleyin.</p>
+    <a href="/" class="btn btn-gs">Ana Sayfaya Dön</a>
+  </div>
+</body>
+</html>
